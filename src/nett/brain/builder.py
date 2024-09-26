@@ -1,6 +1,3 @@
-"""Module for the Brain class."""
-
-import importlib
 import os
 from typing import Any, Optional
 from pathlib import Path
@@ -27,31 +24,7 @@ from nett.brain import encoders
 from nett.utils.callbacks import initialize_callbacks
 from gym.wrappers.monitoring.video_recorder import VideoRecorder
 
-# TODO (v0.3): Extend with support for custom policy models
-# TODO (v0.3): should we move validation checks to utils under validations.py?
-
 class Brain:
-    """Represents the brain of an agent. 
-
-    The brain is made up of an encoder, policy, algorithm, reward function, and the hyperparameters determined for these components such as the batch and buffer sizes. It produces a trained model based on the environment data and the inputs received by the brain through the body.
-
-    Args:
-        policy (Any | str): The network used for defining the value and action networks.
-        algorithm (str | OnPolicyAlgorithm | OffPolicyAlgorithm): The optimization algorithm used for training the model.
-        encoder (Any | str, optional): The network used to extract features from the observations. Defaults to None.
-        embedding_dim (int, optional): The dimension of the embedding space of the encoder. Defaults to None.
-        reward (str, optional): The type of reward used for training the brain. Defaults to "supervised".
-        batch_size (int, optional): The batch size used for training. Defaults to 512.
-        buffer_size (int, optional): The buffer size used for training. Defaults to 2048.
-        train_encoder (bool, optional): Whether to train the encoder or not. Defaults to True.
-        seed (int, optional): The random seed used for training. Defaults to 12.
-        custom_encoder_args (dict[str, str], optional): Custom arguments for the encoder. Defaults to {}.
-
-    Example:
-
-        >>> from nett import Brain
-        >>> brain = Brain(policy='CnnPolicy', algorithm='PPO')
-    """
 
     def __init__(
         self,
@@ -67,8 +40,7 @@ class Brain:
         custom_encoder_args: dict[str, str]= {},
         custom_policy_arch: Optional[list[int|dict[str,list[int]]]] = None
     ) -> None:
-        """Constructor method
-        """
+    
         # Initialize logger
         from nett import logger
 
@@ -89,15 +61,7 @@ class Brain:
         self.custom_policy_arch = custom_policy_arch
 
     def train(self, env: "gym.Env", job: "Job"):
-        """
-        Train the brain.
 
-        Args:
-            job(Job): The job object containing the environment, paths, and training parameters.
-
-        Raises:
-            ValueError: If the environment fails the validation check.
-        """
         # importlib.reload(stable_baselines3)
         # validate environment
         env = self._validate_env(env)
@@ -182,13 +146,7 @@ class Brain:
                         name="reward_graph")   
 
     def test(self, env: "gym.Env", job: "Job"):
-        """
-        Test the brain.
-
-        Args:
-            env (gym.Env): The environment used for testing.
-            job (Job): The job object containing the environment, paths, and training parameters.
-        """
+   
         # load previously trained model from save_dir, if it exists
         model: OnPolicyAlgorithm | OffPolicyAlgorithm = self.algorithm.load(
             job.paths['model'].joinpath('latest_model.zip'), 
@@ -266,17 +224,7 @@ class Brain:
     
     @staticmethod
     def save_encoder_policy_network(policy, path: Path):
-        """
-        Saves the policy and feature extractor of the agent's model.
-
-        This method saves the policy and feature extractor of the agent's model
-        to the specified paths. It first checks if the model is loaded, and if not,
-        it prints an error message and returns. Otherwise, it saves the policy as
-        a pickle file and the feature extractor as a PyTorch state dictionary.
-
-        Returns:
-            None
-        """        
+           
         ## save policy
         path.mkdir(parents=True, exist_ok=True)
         policy.save(os.path.join(path, "policy.pkl"))
@@ -295,15 +243,7 @@ class Brain:
         plots_dir: Path,
         name: str
     ) -> None:
-        """
-        Plot the training results.
-
-        Args:
-            iterations (int): The number of training iterations.
-            model_log_dir (Path): The directory containing the model logs.
-            plots_dir (Path): The directory to save the plots.
-            name (str): The name of the plot.
-        """
+       
         results_plotter.plot_results([str(model_log_dir)],
             iterations,
             results_plotter.X_TIMESTEPS,
@@ -314,15 +254,7 @@ class Brain:
 
     @staticmethod
     def _validate_encoder(encoder: Any | str) -> BaseFeaturesExtractor:
-        """
-        Validate the encoder.
-
-        Args:
-            encoder (Any | str): The encoder to validate.
-
-        Returns:
-            BaseFeaturesExtractor: The validated encoder.
-        """
+     
         # for when encoder is a string
         if isinstance(encoder, str):
             if encoder not in encoder_dict.keys():
@@ -338,18 +270,7 @@ class Brain:
 
     @staticmethod
     def _validate_algorithm(algorithm: str | OnPolicyAlgorithm | OffPolicyAlgorithm) -> OnPolicyAlgorithm | OffPolicyAlgorithm:
-        """
-        Validate the optimization algorithm.
-
-        Args:
-            algorithm (str | OnPolicyAlgorithm | OffPolicyAlgorithm): The algorithm to validate.
-
-        Returns:
-            OnPolicyAlgorithm | OffPolicyAlgorithm: The validated algorithm.
-
-        Raises:
-            ValueError: If the algorithm is not valid.
-        """
+   
         # for when policy is a string
         if isinstance(algorithm, str):
             if algorithm not in algorithms:
@@ -375,19 +296,7 @@ class Brain:
 
     @staticmethod
     def _validate_policy(policy: str | BasePolicy) -> str | BasePolicy:
-        """
-        Validate the policy model.
-
-        Args:
-            policy (str | BasePolicy): The policy model to validate.
-
-        Returns:
-            str | BasePolicy: The validated policy model.
-
-        Raises:
-            ValueError: If the policy is a string and not one of the supported policies.
-            ValueError: If the policy is not a string or a subclass of BasePolicy.
-        """
+       
         # for when policy is a string
         if isinstance(policy, str):
             # support tested for PPO and RecurrentPPO only
@@ -406,18 +315,7 @@ class Brain:
 
     @staticmethod
     def _validate_reward(reward: str) -> str:
-        """
-        Validate the reward type.
-
-        Args:
-            reward (str): The reward type to validate.
-
-        Returns:
-            str: The validated reward type.
-
-        Raises:
-            ValueError: If the reward is a string and not one of the supported reward types.
-        """
+     
         # for when reward is a string
         if not isinstance(reward, str) or reward not in ['supervised', 'unsupervised']:
             raise ValueError("If a string, should be one of: ['supervised', 'unsupervised']")
@@ -425,18 +323,7 @@ class Brain:
 
     @staticmethod
     def _validate_env(env: "gym.Env") -> "gym.Env":
-        """
-        Validate the environment.
-
-        Args:
-            env (gym.Env): The environment to validate.
-
-        Returns:
-            gym.Env: The validated environment.
-
-        Raises:
-            ValueError: If the environment fails the validation check.
-        """
+       
         try:
             check_env(env)
         except Exception as ex:
@@ -445,15 +332,7 @@ class Brain:
 
     @staticmethod
     def _set_encoder_as_eval(model: OnPolicyAlgorithm | OffPolicyAlgorithm) -> OnPolicyAlgorithm | OffPolicyAlgorithm:
-        """
-        Set the encoder as evaluation mode and freeze its parameters.
-
-        Args:
-            model (OnPolicyAlgorithm | OffPolicyAlgorithm): The model containing the encoder.
-
-        Returns:
-            OnPolicyAlgorithm | OffPolicyAlgorithm: The model with the encoder set as evaluation mode.
-        """
+     
         model.policy.features_extractor.eval()
 
         for param in model.policy.features_extractor.parameters():

@@ -38,20 +38,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Resnet18CNN(BaseFeaturesExtractor):
-    """
-    Custom feature extractor based on the ResNet-18 architecture.
 
-    Args:
-        observation_space (gym.Space): The observation space of the environment.
-        features_dim (int): Number of features to be extracted.
-    """
 
     def __init__(self, observation_space: gym.spaces.Box, features_dim: int = 256) -> None:
         super(Resnet18CNN, self).__init__(observation_space, features_dim)
-        # We assume CxHxW images (channels first)
-        # Re-ordering will be done by pre-preprocessing or wrapper
-        ## pretrain set false;
-        #self.cnn = torchvision.models.resnet18(weights=torchvision.models.ResNet18_Weights.DEFAULT)
+
         n_input_channels = observation_space.shape[0]
         logger.info("Resnet18CNN Encoder: ")
         self.cnn = ResNet_18(n_input_channels, features_dim)
@@ -63,15 +54,7 @@ class Resnet18CNN(BaseFeaturesExtractor):
         self.linear = nn.Sequential(nn.Linear(n_flatten, features_dim), nn.ReLU())
 
     def forward(self, observations: th.Tensor) -> th.Tensor:
-        """
-        Forward pass of the feature extractor.
-
-        Args:
-            observations (torch.Tensor): The input observations.
-
-        Returns:
-            torch.Tensor: The extracted features.
-        """
+ 
         # Cut off image
         # reshape to from vector to W*H
         # gray to color transform
@@ -82,15 +65,6 @@ class Resnet18CNN(BaseFeaturesExtractor):
 
 ## reference - online
 class ResBlock(nn.Module):
-    """
-    Residual block used in the ResNet-18 architecture.
-
-    Args:
-        in_channels (int): Number of input channels.
-        out_channels (int): Number of output channels.
-        identity_downsample (nn.Sequential): Downsample layer for the identity.
-        stride (int): Stride of the convolutional layers.
-    """
 
     def __init__(self, in_channels, out_channels, identity_downsample=None, stride=1) -> None:
         super(ResBlock, self).__init__()
@@ -102,15 +76,7 @@ class ResBlock(nn.Module):
         self.identity_downsample = identity_downsample
 
     def forward(self, x: th.Tensor) -> th.Tensor:
-        """
-        Forward pass of the residual block.
-
-        Args:
-            x (torch.Tensor): The input tensor.
-
-        Returns:
-            torch.Tensor: The output tensor.
-        """
+ 
         identity = x
         x = self.conv1(x)
         x = self.bn1(x)
@@ -124,13 +90,6 @@ class ResBlock(nn.Module):
         return x
 
 class ResNet_18(nn.Module):
-    """
-    ResNet-18 architecture used in the Resnet18CNN class.
-
-    Args:
-        image_channels (int): Number of input channels.
-        num_classes (int): Number of output classes.
-    """
 
     def __init__(self, image_channels, num_classes) -> None:
         super(ResNet_18, self).__init__()
@@ -150,17 +109,7 @@ class ResNet_18(nn.Module):
         self.fc = nn.Linear(512, num_classes)
 
     def __make_layer(self, in_channels, out_channels, stride) -> nn.Sequential:
-        """
-        Helper function to create a residual layer.
-
-        Args:
-            in_channels (int): Number of input channels.
-            out_channels (int): Number of output channels.
-            stride (int): Stride of the convolutional layers.
-
-        Returns:
-            nn.Sequential: The residual layer.
-        """
+  
         identity_downsample = None
         if stride != 1:
             identity_downsample = self.identity_downsample(in_channels, out_channels)
@@ -171,15 +120,7 @@ class ResNet_18(nn.Module):
         )
 
     def forward(self, x: th.Tensor) -> th.Tensor:
-        """
-        Forward pass of the ResNet-18 architecture.
 
-        Args:
-            x (torch.Tensor): The input tensor.
-
-        Returns:
-            torch.Tensor: The output tensor.
-        """
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -196,16 +137,7 @@ class ResNet_18(nn.Module):
         return x
 
     def identity_downsample(self, in_channels, out_channels) -> nn.Sequential:
-        """
-        Helper function to create an identity downsample layer.
-
-        Args:
-            in_channels (int): Number of input channels.
-            out_channels (int): Number of output channels.
-
-        Returns:
-            nn.Sequential: The identity downsample layer.
-        """
+  
         return nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=2, padding=1),
             nn.BatchNorm2d(out_channels)

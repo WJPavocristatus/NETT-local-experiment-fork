@@ -1,8 +1,3 @@
-'''
-This file contains the implementation of ResNet-18 with 2 blocks
-Output from the second block now gives 512 channels instead of 128
-'''
-
 
 import torch
 from torch import nn as nn
@@ -43,19 +38,7 @@ MODEL_URLS = {
 
 
 def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1) -> nn.Conv2d:
-    """
-    3x3 convolution with padding
-
-    Args:
-        in_planes (int): Number of input channels
-        out_planes (int): Number of output channels
-        stride (int): Stride
-        groups (int): Number of groups
-        dilation (int): Dilation
-
-    Returns:
-        nn.Conv2d: Convolution layer
-    """
+ 
     return nn.Conv2d(
         in_planes,
         out_planes,
@@ -69,33 +52,12 @@ def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1) -> nn.Conv2d:
 
 
 def conv1x1(in_planes, out_planes, stride=1) -> nn.Conv2d:
-    """
-    1x1 convolution
 
-    Args:
-        in_planes (int): Number of input channels
-        out_planes (int): Number of output channels
-        stride (int): Stride
-
-    Returns:
-        nn.Conv2d: Convolution layer"""
     return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
 
 
 class BasicBlock(nn.Module):
-    """
-    BasicBlock for ResNet
-
-    Args:
-        inplanes (int): Number of input channels
-        planes (int): Number of output channels
-        stride (int): Stride
-        downsample (nn.Module): Downsample layer
-        groups (int): Number of groups
-        base_width (int): Base width
-        dilation (int): Dilation
-        norm_layer (nn.Module): Normalization layer
-    """
+ 
     expansion = 1
 
     def __init__(
@@ -121,15 +83,7 @@ class BasicBlock(nn.Module):
         self.stride = stride
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Forward pass in the network
-
-        Args:
-            x (torch.Tensor): input tensor
-
-        Returns:
-            torch.Tensor: output tensor
-        """
+       
         # saving x to pass over the bridge connection
         identity = x
 
@@ -150,22 +104,7 @@ class BasicBlock(nn.Module):
 
 
 class ResNet(nn.Module):
-    """
-    ResNet model
-
-    Args:
-        block (nn.Module): ResNet block
-        layers (list): List of layers
-        num_classes (int): Number of classes
-        zero_init_residual (bool): If True, zero-initialize the last BN in each residual branch
-        groups (int): Number of groups
-        width_per_group (int): Width per group
-        replace_stride_with_dilation (tuple): Replace stride with dilation
-        norm_layer (nn.Module): Normalization layer
-        return_all_feature_maps (bool): If True, returns all feature maps
-        first_conv (bool): If True, uses first conv layer
-        maxpool1 (bool): If True, uses maxpool1 layer
-    """
+  
 
     def __init__(
         self,
@@ -245,19 +184,7 @@ class ResNet(nn.Module):
                     nn.init.constant_(m.bn2.weight, 0)
 
     def _make_layer(self, block, planes, blocks, stride=1, dilate=False) -> nn.Sequential:
-        """
-        Creates a layer of residual blocks
-
-        Args:
-            block (nn.Module): ResNet block
-            planes (int): Number of planes
-            blocks (int): Number of blocks
-            stride (int): Stride
-            dilate (bool): If True, dilates the stride
-
-        Returns:
-            nn.Sequential: Residual block layer
-        """
+       
         norm_layer = self._norm_layer
         downsample = None
         previous_dilation = self.dilation
@@ -299,15 +226,7 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Forward pass in the network
-
-        Args:
-            x (torch.Tensor): input tensor
-
-        Returns:
-            torch.Tensor: output tensor
-        """
+       
         # passing input from pre-processing layers
         x0 = self.conv1(x)
         x0 = self.bn1(x0)
@@ -331,20 +250,7 @@ class ResNet(nn.Module):
 
 
 def _resnet(arch, block, layers, pretrained, progress, **kwargs) -> ResNet:
-    """
-    Constructs a ResNet model.
-
-    Args:
-        arch (str): Architecture name from the URLs
-        block (nn.Module): ResNet block
-        layers (list): List of layers
-        pretrained (bool): If True, returns a model pre-trained on ImageNet
-        progress (bool): If True, displays a progress bar of the download to stderr
-        **kwargs: Other arguments for the ResNet model
-
-    Returns:
-        ResNet: ResNet model
-    """
+  
     model = ResNet(block, layers, **kwargs)
     if pretrained:
        state_dict = load_state_dict_from_url(MODEL_URLS[arch], progress=progress)
@@ -356,24 +262,8 @@ def _resnet(arch, block, layers, pretrained, progress, **kwargs) -> ResNet:
     
 
 def resnet_2blocks(pretrained: bool = False, progress: bool = True, **kwargs) -> nn.Module:
-    """
-    Constructs a ResNet-18 model with 2 blocks.
-    
-    Args:
-        pretrained (bool): If True, returns a model pre-trained on ImageNet
-        progress (bool): If True, displays a progress bar of the download to stderr
-        **kwargs: Other arguments for the ResNet model
-
-    Returns:
-        nn.Module: ResNet-18 model with 2 blocks
-    """
+  
 
 
-
-    """
-    first argument in _resnet() : architecture name from the URLs
-    since URL for resnet9 is not available, therefore resnet18 is used with modifications
-    """
-    
     # to print this architecture, print the model from the evaluator/evaluate file
     return _resnet('resnet18', BasicBlock, [2, 2, 2, 2], pretrained, progress, **kwargs)

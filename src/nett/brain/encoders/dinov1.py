@@ -1,4 +1,3 @@
-"""DINO (Emerging Properties in Self-Supervised Vision Transformers) model"""
 import gym
 import torch
 import timm
@@ -7,16 +6,7 @@ from torchvision.transforms import Compose, Resize, CenterCrop, Normalize, Inter
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 
 class DinoV1(BaseFeaturesExtractor):
-    """
-    Initialize DinoV1 feature extractor.
-
-    Args:
-        observation_space (gym.spaces.Box): The observation space of the environment.
-        features_dim (int, optional): Number of features extracted. This corresponds to the number of units for the last layer. Defaults to 384.
-    """
     def __init__(self, observation_space: gym.spaces.Box, features_dim: int = 384) -> None:
-        """Constructor method
-        """
         super(DinoV1, self).__init__(observation_space, features_dim)
         self.n_input_channels = observation_space.shape[0]
         self.transforms = Compose([Resize(size=248,
@@ -32,5 +22,4 @@ class DinoV1(BaseFeaturesExtractor):
                                        pretrained=True)
 
     def forward(self, observations: torch.Tensor) -> torch.Tensor:
-        """Forward pass of the DinoV1 model."""
         return self.model(self.transforms(observations))

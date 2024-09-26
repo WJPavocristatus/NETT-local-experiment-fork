@@ -26,24 +26,9 @@ from nett.utils.job import Job
 from nett.utils.environment import port_in_use
 
 class NETT:
-    """
-    The NETT class is the main class for training, testing, and analyzing brains in environments.
-
-    Args:
-        brain (Brain): The brain to be trained and tested.
-        body (Body): The body to be used for training and testing the brain.
-        environment (Environment): The environment in which the brain is to be trained and tested.
-
-    Example:
-        >>> from nett import NETT
-        >>> # create a brain, body, and environment
-        >>> benchmarks = NETT(brain, body, environment)
-    """
-
+  
     def __init__(self, brain: "nett.Brain", body: "nett.Body", environment: "nett.Environment") -> None:
-        """
-        Initialize the NETT class.
-        """
+      
         from nett import logger
         self.logger = logger.getChild(__class__.__name__)
         self.brain = brain
@@ -69,31 +54,7 @@ class NETT:
             save_checkpoints: bool = False,
             checkpoint_freq: int = 30_000,
             base_port: int = 5004) -> list[Future]:
-        """
-        Run the training and testing of the brains in the environment.
-
-        Args:
-            output_dir (Path | str): The directory where the run results will be stored.
-            num_brains (int, optional): The number of brains to be trained and tested. Defaults to 1.
-            mode (str, optional): The mode in which the brains are to be trained and tested. It can be "train", "test", or "full". Defaults to "full".
-            train_eps (int, optional): The number of episodes the brains are to be trained for. Defaults to 1000.
-            test_eps (int, optional): The number of episodes the brains are to be tested for. Defaults to 20.
-            batch_mode (bool, optional): Whether to run in batch mode, which will not display Unity windows. Good for headless servers. Defaults to True.
-            devices (list[int], optional): The list of devices to be used for training and testing. If None, all available devices will be used. Defaults to None.
-            job_memory (int, optional): The memory allocated, in Gigabytes, for a single job. Defaults to 4.
-            buffer (float, optional): The buffer for memory allocation. Defaults to 1.2.
-            steps_per_episode (int, optional): The number of steps per episode. Defaults to 1000.
-            verbose (int, optional): Whether or not to print info statements. Defaults to True.
-            save_checkpoints (bool, optional): Whether to save checkpoints during training. Defaults to False.
-            checkpoint_freq (int, optional): The frequency at which checkpoints are saved. Defaults to 30_000.
-            base_port (int, optional): The base port number to use for communication with the Unity environment. Defaults to 5004.
-
-        Returns:
-            list[Future]: A list of futures representing the jobs that have been launched.
-
-        Example:
-            >>> job_sheet = benchmarks.run(output_dir="./test_run", num_brains=2, train_eps=100, test_eps=10) # benchmarks is an instance of NETT
-        """
+    
         # set up the output_dir (wherever the user specifies, REQUIRED, NO DEFAULT)
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -148,19 +109,7 @@ class NETT:
         return job_sheet
 
     def status(self, job_sheet: dict[Future, Job]) -> pd.DataFrame:
-        """
-        Get the status of the jobs in the job sheet.
-
-        Args:
-            job_sheet (dict[Future, Job]): The job sheet returned by the .launch_jobs() method.
-
-        Returns:
-            pd.DataFrame: A dataframe containing the status of the jobs in the job sheet.
-
-        Example:
-            >>> status = benchmarks.status(job_sheet)
-            >>> # benchmarks is an instance of NETT, job_sheet is the job sheet returned by the .run() method
-        """
+     
         selected_columns = ["brain_id", "condition", "device"]
         filtered_job_sheet = self._filter_job_sheet(job_sheet, selected_columns)
         return pd.json_normalize(filtered_job_sheet)
@@ -179,28 +128,7 @@ class NETT:
                 num_episodes: int = 1000,
                 bar_order: str | list[int] = "default",
                 color_bars: bool = True) -> None:
-        """
-        Analyze the results of a run.
-
-        This method is a static method and does not require an instance of the NETT class to be called.
-
-        Args:
-            config (str): The configuration of the experiment to be analyzed. It can be "parsing", "binding", "viewinvariant", "facedifferentiation", "biomotion", or "statisticallearning".
-            run_dir (str | Path): The directory where the run results are stored.
-            output_dir (str | Path, optional): The directory where the analysis results will be stored. 
-                If None, the analysis results will be stored in the run directory.
-            ep_bucket (int, optional): The number of episodes to be grouped together for analysis.
-            num_episodes (int, optional): The number of episodes to be analyzed.
-            bar_order (str | list[int], optional): The order in which the bars are to be displayed in the analysis plots. 
-                Default is "default". Can be "default", "asc", "desc", or a list of bar numbers (e.g. [3,1,2,4]).
-            color_bars (bool, optional): Whether to color the bars in the analysis plots by condition. Default is True.
-
-        Returns:
-            None
-
-        Example:
-            >>> nett.analyze(run_dir="./test_run", output_dir="./results") # benchmarks is an instance of NETT
-        """
+   
         # TODO may need to clean up this file structure
         # set paths
         run_dir = Path(run_dir).resolve()
@@ -355,16 +283,7 @@ class NETT:
         return memory_status
     
     def _launch_jobs(self, jobs: list[Job], wait: bool, waitlist: list[Job], verbose: bool) -> dict[Future, Job]:
-        """
-        Launch the jobs in the job sheet.
-
-        Args:
-            jobs (list[Job]): The jobs to be launched.
-            waitlist (list[Job], optional): The jobs that are to be queued until memory is available.
-
-        Returns:
-            dict[Future, Job]: A dictionary of futures corresponding to the jobs that were launched from them.
-        """
+     
         try:
             max_workers = 1 if len(jobs) == 1 else None
             initializer = mute if not verbose else None

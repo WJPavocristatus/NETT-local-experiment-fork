@@ -1,19 +1,29 @@
 [build-system]
 requires = ["setuptools<=65.5.0", "pip<=21"]
+
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nett-benchmarks"
-dynamic = ["version"]
+
+name = "nett-benchmarks-fork"
+
+"version" = "0.0.1"
+
 authors = [
   { name="Bhargav Desai", email="desabh@iu.edu" },
-  { name="Zachary Laborde", email="zlaborde@iu.edu" },
   { name="Manju Garimella", email="mchivuku@iu.edu" },
+  { name="Zachary Laborde", email="zlaborde@iu.edu" },
+  { name="Jake Peacock", email="wjpeacoc@iu.edu" }
 ]
+
 description = "A testbed for comparing the learning abilities of newborn animals and autonomous artificial agents."
+
 readme = "README.md"
+
 license = {file = "LICENSE"}
+
 requires-python = "==3.10.12"
+
 dependencies = [
     "mlagents==1.0.0",
     "stable-baselines3[extra]==1.8.0",
@@ -25,7 +35,26 @@ dependencies = [
     "lightning-bolts==0.7.0",
     "scikit-learn==1.5.0"
 ]
-keywords = ["nett","netts","newborn","embodied","turing test","benchmark","benchmarking","learning","animals","autonomous","artificial","agents","reinforcement","neuroml","AI","ML","machine learning","artificial intelligence"]
+
+keywords = [
+    "nett",
+    "netts",
+    "newborn",
+    "embodied",
+    "turing test",
+    "benchmark",
+    "benchmarking",
+    "learning","animals",
+    "autonomous",
+    "agents",
+    "reinforcement",
+    "neuroml",
+    "AI",
+    "ML",
+    "machine learning",
+    "artificial intelligence"
+]
+
 classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: R",
@@ -37,11 +66,7 @@ notebook = ["ipywidgets"]
 
 [project.urls]
 "Homepage" = "https://github.com/buildingamind/NewbornEmbodiedTuringTest"
-"Bug Tracker" = "https://github.com/buildingamind/NewbornEmbodiedTuringTest/issues"
-"Documentation" = "https://buildingamind.github.io/NewbornEmbodiedTuringTest/index.html"
-
-[tool.setuptools.dynamic]
-version = { attr = "nett._version.__version__" }
+"Experimental Fork" = "https://github.com/WJPavocristatus/NETT-local-experiment-fork.git"
 
 [tool.setuptools.packages.find]
 where = ["src"]

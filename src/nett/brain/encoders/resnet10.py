@@ -15,13 +15,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Resnet10CNN(BaseFeaturesExtractor):
-    """
-    Resnet10CNN feature extractor for stable-baselines3
 
-    Args:
-        observation_space (gym.spaces.Box): Observation space
-        features_dim (int, optional): Output dimension of features extractor. Defaults to 256.
-    """
 
     def __init__(self, observation_space: gym.spaces.Box, features_dim: int = 256):
         super(Resnet10CNN, self).__init__(observation_space, features_dim)
@@ -41,15 +35,7 @@ class Resnet10CNN(BaseFeaturesExtractor):
         self.linear = nn.Sequential(nn.Linear(n_flatten, features_dim), nn.ReLU())
         
     def forward(self, observations: th.Tensor) -> th.Tensor:
-        """
-        Forward pass of the feature extractor.
-
-        Args:
-            observations (torch.Tensor): The input observations.
-
-        Returns:
-            torch.Tensor: The extracted features.
-        """
+     
         # Cut off image
         # reshape to from vector to W*H
         # gray to color transform
@@ -59,19 +45,7 @@ class Resnet10CNN(BaseFeaturesExtractor):
         return self.linear(self.cnn(observations))
     
 def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1) -> nn.Conv2d:
-    """
-    3x3 convolution with padding
-
-    Args:
-        in_planes (int): Number of input channels
-        out_planes (int): Number of output channels
-        stride (int, optional): Stride of the convolution. Defaults to 1.
-        groups (int, optional): Number of groups for the convolution. Defaults to 1.
-        dilation (int, optional): Dilation rate of the convolution. Defaults to 1.
-
-    Returns:
-        nn.Conv2d: Convolutional layer
-    """
+  
     return nn.Conv2d(
         in_planes,
         out_planes,
@@ -85,17 +59,7 @@ def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1) -> nn.Conv2d:
 
 
 def conv1x1(in_planes, out_planes, stride=1):
-    """
-    1x1 convolution
-
-    Args:
-        in_planes (int): Number of input channels
-        out_planes (int): Number of output channels
-        stride (int, optional): Stride of the convolution. Defaults to 1.
-
-    Returns:
-        nn.Conv2d: Convolutional layer
-    """
+  
     return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
 
 
@@ -104,19 +68,24 @@ class BasicBlock(nn.Module):
     Basic block used in the ResNet-18 architecture.
     
     Args:
-        inplanes (int): Number of input channels
-        planes (int): Number of output channels
-        stride (int, optional): Stride of the convolution. Defaults to 1.
-        downsample (nn.Module, optional): Downsample layer. Defaults to None.
-        groups (int, optional): Number of groups for the convolution. Defaults to 1.
-        base_width (int, optional): Base width for the convolution. Defaults to 64.
-        dilation (int, optional): Dilation rate of the convolution. Defaults to 1.
-        norm_layer ([type], optional): Normalization layer. Defaults to None.
+       
+        
+        
+        
+        n
     """
     expansion = 1
 
     def __init__(
-        self, inplanes, planes, stride=1, downsample=None, groups=1, base_width=64, dilation=1, norm_layer=None
+        self, 
+        inplanes,               # inplanes (int): Number of input channels             
+        planes,                 # planes (int): Number of output channels
+        stride=1,               # stride (int, optional): Stride of the convolution. Defaults to 1.
+        downsample=None,        # downsample (nn.Module, optional): Downsample layer. Defaults to None.
+        groups=1,               # groups (int, optional): Number of groups for the convolution. Defaults to 1.
+        base_width=64,          # base_width (int, optional): Base width for the convolution. Defaults to 64.
+        dilation=1,             # dilation (int, optional): Dilation rate of the convolution. Defaults to 1.
+        norm_layer=None         # norm_layer ([type], optional): Normalization layer. Defaults to None.
     ):
         super(BasicBlock, self).__init__()
         if norm_layer is None:
@@ -138,15 +107,7 @@ class BasicBlock(nn.Module):
         self.stride = stride
 
     def forward(self, x: th.Tensor) -> th.Tensor:
-        """
-        Forward pass in the network
 
-        Args:
-            x (torch.Tensor): input tensor
-
-        Returns:
-            torch.Tensor: output tensor
-        """
         # saving x to pass over the bridge connection
         identity = x
 
@@ -166,38 +127,22 @@ class BasicBlock(nn.Module):
         return out
 
 class ResNet(nn.Module):
-    """
-    ResNet architecture used in the Resnet10CNN class.
-
-    Args:
-        block (nn.Module): Residual block to use
-        layers (list): Number of layers in each block
-        num_channels (int): Number of input channels
-        num_classes (int, optional): Number of classes. Defaults to 1000.
-        zero_init_residual (bool, optional): Zero initialization for the residual block. Defaults to False.
-        groups (int, optional): Number of groups for the convolution. Defaults to 1.
-        width_per_group (int, optional): Base width for the convolution. Defaults to 64.
-        replace_stride_with_dilation (tuple, optional): Replace stride with dilation. Defaults to None.
-        norm_layer ([type], optional): Normalization layer. Defaults to None.
-        return_all_feature_maps (bool, optional): Return all feature maps. Defaults to False.
-        first_conv (bool, optional): Pre-processing layers which makes the image size half [64->32]. Defaults to True.
-        maxpool1 (bool, optional): Used in pre-processing. Defaults to True.
-    """
 
     def __init__(
         self,
-        block,
-        layers,
-        num_channels,
-        num_classes=1000,
-        zero_init_residual=False,
-        groups=1,
-        width_per_group=64,
-        replace_stride_with_dilation=None,
-        norm_layer=None,
-        return_all_feature_maps=False,
-        first_conv=True, # pre-processing layers which makes the image size half [64->32]
-        maxpool1=True # used in pre-processing
+        block,                                  # block (nn.Module): Residual block to use
+        layers,                                 # layers (list): Number of layers in each block
+        num_channels,                           # num_channels (int): Number of input channels
+        num_classes=1000,                       # num_classes (int, optional): Number of classes. Defaults to 1000.
+        zero_init_residual=False,               # zero_init_residual (bool, optional): Zero initialization for the residual block. Defaults to False.
+        groups=1,                               # groups (int, optional): Number of groups for the convolution. Defaults to 1.
+        width_per_group=64,                     # width_per_group (int, optional): Base width for the convolution. Defaults to 64.
+        replace_stride_with_dilation=None,      # replace_stride_with_dilation (tuple, optional): Replace stride with dilation. Defaults to None.
+        norm_layer=None,                        # norm_layer ([type], optional): Normalization layer. Defaults to None.
+        return_all_feature_maps=False,          # return_all_feature_maps (bool, optional): Return all feature maps. Defaults to False.
+        first_conv=True,                        # first_conv (bool, optional): Pre-processing layers which makes the image size half [64->32]. Defaults to True.(pre-processing layers which makes the image size half [64->32])
+        maxpool1=True                           # maxpool1 (bool, optional): Used in pre-processing. Defaults to True. (used in pre-processing)
+ 
     ):
         super(ResNet, self).__init__()
         if norm_layer is None:
@@ -265,19 +210,7 @@ class ResNet(nn.Module):
                     nn.init.constant_(m.bn2.weight, 0)
 
     def _make_layer(self, block, planes, blocks, stride=1, dilate=False) -> nn.Sequential:
-        """
-        Helper function to create a residual layer.
-
-        Args:
-            block (nn.Module): Residual block to use
-            planes (int): Number of output channels
-            blocks (int): Number of blocks
-            stride (int, optional): Stride of the convolution. Defaults to 1.
-            dilate (bool, optional): Use dilation. Defaults to False.
-
-        Returns:
-            nn.Sequential: Residual layer
-        """
+  
         norm_layer = self._norm_layer
         downsample = None
         previous_dilation = self.dilation
@@ -319,15 +252,7 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x: th.Tensor) -> th.Tensor:
-        """
-        Forward pass in the network
 
-        Args:
-            x (torch.Tensor): input tensor
-
-        Returns:
-            torch.Tensor: output tensor
-        """
 
         # passing input from pre-processing layers
         x0 = self.conv1(x)
@@ -352,16 +277,7 @@ class ResNet(nn.Module):
 
 
 def _resnet(block, layers, **kwargs):
-    """
-    ResNet architecture used in the Resnet10CNN class.
 
-    Args:
-        block (nn.Module): Residual block to use
-        layers (list): Number of layers in each block
-
-    Returns:
-        ResNet: ResNet model
-    """
     model = ResNet(block, layers, **kwargs)
     model.fc = nn.Identity()
     return model

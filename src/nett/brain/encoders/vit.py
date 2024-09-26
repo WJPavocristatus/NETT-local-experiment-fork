@@ -1,4 +1,3 @@
-"""ViT (Vision Transformer) encoder"""
 import gym
 import torch
 import timm
@@ -8,21 +7,9 @@ from torchvision.transforms import Resize, CenterCrop, Normalize, InterpolationM
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 
 class ViT(BaseFeaturesExtractor):
-    """
-    ViT is a feature extractor based on the Vision Transformer model.
 
-    Args:
-        observation_space (gym.spaces.Box): The observation space of the environment.
-        features_dim (int, optional): The dimension of the extracted features. Defaults to 384.
-    """
     def __init__(self, observation_space: gym.spaces.Box, features_dim: int = 384) -> None:
-        """
-        Initializes the ViT (Vision Transformer) encoder.
 
-        Args:
-            observation_space (gym.spaces.Box): The observation space of the environment.
-            features_dim (int, optional): The dimension of the extracted features. Defaults to 384.
-        """
         super(ViT, self).__init__(observation_space, features_dim)
         self.n_input_channels = observation_space.shape[0]
         self.transforms = Compose([Resize(size=248,
@@ -39,13 +26,5 @@ class ViT(BaseFeaturesExtractor):
                                        pretrained=False)
 
     def forward(self, observations: torch.Tensor) -> torch.Tensor:
-        """
-        Forward pass of the ViT encoder.
 
-        Args:
-            observations (torch.Tensor): The input observations.
-
-        Returns:
-            torch.Tensor: The extracted features.
-        """
         return self.model(self.transforms(observations))

@@ -1,9 +1,3 @@
-"""
-Callbacks for training the agents.
-
-Classes:
-    HParamCallback(BaseCallback)
-"""
 from pathlib import Path
 import sys
 
@@ -16,15 +10,7 @@ from stable_baselines3.common.logger import HParam
 from pynvml import nvmlDeviceGetHandleByIndex, nvmlDeviceGetMemoryInfo, nvmlInit
 
 def initialize_callbacks(job: "Job") -> CallbackList:
-    """
-    Initialize the callbacks for training.
 
-    Args:
-        job (Job): The job for which to initialize the callbacks.
-    
-    Returns:
-        CallbackList: The list of callbacks for training.
-    """
     hparam_callback = HParamCallback() # TODO: Are we using the tensorboard that this creates? See https://www.tensorflow.org/tensorboard Appears to be responsible for logs/events.out.. files
 
     callback_list = [hparam_callback]
@@ -51,9 +37,7 @@ def initialize_callbacks(job: "Job") -> CallbackList:
 
 # TODO (v0.4): refactor needed, especially logging
 class HParamCallback(BaseCallback):
-    """
-    Saves the hyperparameters and metrics at the start of the training, and logs them to TensorBoard.
-    """
+
     def _on_training_start(self) -> None:
         hparam_dict = {
             "algorithm": self.model.__class__.__name__,
@@ -78,9 +62,7 @@ class HParamCallback(BaseCallback):
         return True
 
 class multiBarCallback(BaseCallback):
-    """
-    Display a progress bar when training SB3 agent using tqdm
-    """
+
 
     def __init__(self, index: int, label: str, num_steps: int = None) -> None:
         super().__init__()
@@ -112,9 +94,7 @@ class multiBarCallback(BaseCallback):
         pass
 
 class MemoryCallback(BaseCallback):
-    """
-    A custom callback that derives from ``BaseCallback``.
-    """
+
     def __init__(self, device: int, save_path: str) -> None:
         super().__init__()
         self.device = device
@@ -123,14 +103,7 @@ class MemoryCallback(BaseCallback):
         nvmlInit()
 
     def _on_step(self) -> bool:
-        """
-        This method will be called by the model after each call to `env.step()`.
 
-        For child callback (of an `EventCallback`), this will be called
-        when the event is triggered.
-
-        :return: If the callback returns False, training is aborted early.
-        """
         if self.close:
             # Create a temporary directory to store the memory usage
             # os.makedirs("./.tmp", exist_ok=True)
@@ -144,8 +117,6 @@ class MemoryCallback(BaseCallback):
         return True
 
     def _on_rollout_end(self) -> None:
-        """
-        This event is triggered before updating the policy.
-        """
+   
         self.close = True
         pass

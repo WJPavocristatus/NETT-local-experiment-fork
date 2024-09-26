@@ -1,7 +1,4 @@
-"""
-This file contains the implementation of SimCLR model.
-SimCLR is a contrastive learning technique that learns representations by maximizing agreement between differently augmented views of the same data instance via a contrastive loss in the latent space.
-"""
+
 import math
 from argparse import ArgumentParser
 from typing import Callable, Optional
@@ -23,15 +20,7 @@ from .archs import resnet_2b
 from .archs import resnet_1b
 
 class Projection(nn.Module):
-    """
-    MLP for projection head
-
-    Args:
-        input_dim (int): input dimension
-        hidden_dim (int): hidden dimension
-        output_dim (int): output dimension
-        depth (int): number of hidden layers
-    """
+    
 
     def __init__(self, input_dim=2048, hidden_dim=2048, output_dim=128, depth=1):
         super().__init__()
@@ -57,69 +46,36 @@ class Projection(nn.Module):
         self.model = nn.Sequential(*layers)
 
     def forward(self, x) -> torch.Tensor:
-        """
-        Forward pass of the projection head
-        
-        Args:
-            x (torch.Tensor): input tensor
-        
-        Returns:
-            torch.Tensor: projected features
-        """
+    
         x = self.model(x)
         return F.normalize(x, dim=1)
 
 class SimCLR(L.LightningModule):
-    """
-    SimCLR model
 
-    Args:
-        gpus (int): number of gpus
-        num_samples (int): number of samples in the dataset
-        batch_size (int): batch size
-        num_nodes (int, optional): number of nodes. Defaults to 1.
-        arch (str, optional): architecture. Defaults to "resnet18".
-        window_size (int, optional): window size. Defaults to 3.
-        hidden_mlp (int, optional): hidden layer dimension in projection head. Defaults to 512.
-        hidden_depth (int, optional): number of hidden layers in projection head. Defaults to 1.
-        feat_dim (int, optional): feature dimension. Defaults to 128.
-        warmup_epochs (int, optional): number of warmup epochs. Defaults to 5.
-        max_epochs (int, optional): maximum number of epochs. Defaults to 100.
-        temperature (float, optional): temperature parameter in training loss. Defaults to 0.1.
-        first_conv (bool, optional): first convolution layer. Defaults to True.
-        maxpool1 (bool, optional): maxpool1 layer. Defaults to True.
-        optimizer (str, optional): optimizer. Defaults to "adam".
-        lars_wrapper (bool, optional): lars wrapper. Defaults to True.
-        exclude_bn_bias (bool, optional): exclude bn bias. Defaults to False.
-        start_lr (float, optional): initial warmup learning rate. Defaults to 0.
-        learning_rate (float, optional): base learning rate. Defaults to 1e-3.
-        final_lr (float, optional): final learning rate. Defaults to 0.
-        weight_decay (float, optional): weight decay. Defaults to 1e-6.
-    """
 
     def __init__(
         self,
-        gpus: int,
-        num_samples: int,
-        batch_size: int,
-        num_nodes: int = 1,
-        arch: str = "resnet18",
-        window_size:int = 3,
-        hidden_mlp: int = 512,
-        hidden_depth: int = 1,
-        feat_dim: int = 128,
-        warmup_epochs: int = 5,
-        max_epochs: int = 100,
-        temperature: float = 0.1,
-        first_conv: bool = True, # changed from True to False
-        maxpool1: bool = True, # changed from True to False
-        optimizer: str = "adam",
-        lars_wrapper: bool = True,
-        exclude_bn_bias: bool = False,
-        start_lr: float = 0.,
-        learning_rate: float = 1e-3,
-        final_lr: float = 0.,
-        weight_decay: float = 1e-6,
+        gpus: int,                      # gpus (int): number of gpus
+        num_samples: int,               # num_samples (int): number of samples in the dataset
+        batch_size: int,                # batch_size (int): batch size
+        num_nodes: int = 1,             # num_nodes (int, optional): number of nodes. Defaults to 1.
+        arch: str = "resnet18",         # arch (str, optional): architecture. Defaults to "resnet18".
+        window_size:int = 3,            # window_size (int, optional): window size. Defaults to 3.
+        hidden_mlp: int = 512,          # hidden_mlp (int, optional): hidden layer dimension in projection head. Defaults to 512.
+        hidden_depth: int = 1,          # hidden_depth (int, optional): number of hidden layers in projection head. Defaults to 1.
+        feature_dim: int = 128,         #  feature_dim (int, optional): feature dimension. Defaults to 128.
+        warmup_epochs: int = 5,         # warmup_epochs (int, optional): number of warmup epochs. Defaults to 5.
+        max_epochs: int = 100,          # max_epochs (int, optional): maximum number of epochs. Defaults to 100.
+        temperature: float = 0.1,       # temperature (float, optional): temperature parameter in training loss. Defaults to 0.1.
+        first_conv: bool = True,        #  first_conv (bool, optional): first convolution layer. Defaults to True.
+        maxpool1: bool = True,          #  maxpool1 (bool, optional): maxpool1 layer. Defaults to True.
+        optimizer: str = "adam",        # optimizer (str, optional): optimizer. Defaults to "adam".
+        lars_wrapper: bool = True,      # lars_wrapper (bool, optional): lars wrapper. Defaults to True.
+        exclude_bn_bias: bool = False,  # exclude_bn_bias (bool, optional): exclude bn bias. Defaults to False.
+        start_lr: float = 0.0,          # start_lr (float, optional): initial warmup learning rate. Defaults to 0.
+        learning_rate: float = 1e-3,    # learning_rate (float, optional): base learning rate. Defaults to 1e-3.
+        final_lr: float = 0.0,          # final_lr (float, optional): final learning rate. Defaults to 0.
+        weight_decay: float = 1e-6,     # weight_decay (float, optional): weight decay. Defaults to 1e-6.
         **kwargs
     ):
         super().__init__()
@@ -134,7 +90,7 @@ class SimCLR(L.LightningModule):
 
         self.hidden_mlp = hidden_mlp
         self.hidden_depth = hidden_depth
-        self.feat_dim = feat_dim
+        self.feature_dim = feature_dim
         self.first_conv = first_conv
         self.maxpool1 = maxpool1
 
@@ -155,7 +111,7 @@ class SimCLR(L.LightningModule):
         self.projection = Projection(
             input_dim=self.hidden_mlp,
             hidden_dim=self.hidden_mlp,
-            output_dim=self.feat_dim,
+            output_dim=self.feature_dim,
             depth=self.hidden_depth,
         )
 
@@ -483,7 +439,7 @@ class SimCLR(L.LightningModule):
         parser.add_argument("--maxpool1", action="store_false")
         parser.add_argument("--hidden_mlp", default=512, type=int, help="hidden layer dimension in projection head")
         parser.add_argument("--hidden_depth", default=1, type=int, help="number of hidden layers in projection head")
-        parser.add_argument("--feat_dim", default=128, type=int, help="feature dimension")
+        parser.add_argument("--feature_dim", default=128, type=int, help="feature dimension")
 
         # transform params
         parser.add_argument("--gaussian_blur", action="store_true", help="add gaussian blur")

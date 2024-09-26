@@ -1,5 +1,3 @@
-"""Module for the Environment class."""
-
 from __future__ import annotations
 
 import importlib
@@ -23,27 +21,6 @@ except PermissionError as _:
 from nett.utils.environment import Logger
 
 class Environment(Wrapper):
-    """
-    Represents the environment where the agent lives.
-
-    The environment is the source of all input data streams to train the brain of the agent. 
-    It accepts a Unity Executable and wraps it around as a Gym environment by leveraging the UnityEnvironment 
-    class from the mlagents_envs library.
-
-    It provides a convenient interface for interacting with the Unity environment and includes methods for initializing the environment, rendering frames, taking steps, resetting the environment, and logging messages.
-
-    Args:
-        executable_path (str): The path to the Unity executable file.
-        display (int, optional): The display number to use for the Unity environment. Defaults to 0.
-        record_chamber (bool, optional): Whether to record the chamber. Defaults to False.
-        record_agent (bool, optional): Whether to record the agent. Defaults to False.
-        recording_frames (int, optional): The number of frames to record. Defaults to 1000.
-
-    Example:
-
-        >>> from nett import Environment
-        >>> env = Environment(executable_path="path/to/executable")
-    """
     def __init__(self,
                  executable_path: str,
                  display: int = 0,
@@ -73,13 +50,6 @@ class Environment(Wrapper):
     # how can we build + constraint arguments better? something like an ArgumentParser sounds neat
     # TODO (v0.4) fix random_pos logic inside of Unity code
     def initialize(self, mode: str, port: int, **kwargs) -> None:
-        """
-        Initializes the environment with the given mode and arguments.
-
-        Args:
-            mode (str): The mode to set the environment for training or testing or both.
-            **kwargs: The arguments to pass to the environment.
-        """
         importlib.reload(mlagents_envs)
 
         args = []
@@ -125,85 +95,32 @@ class Environment(Wrapper):
         super().__init__(self.env)
 
     def log(self, msg: str) -> None:
-        """
-        Logs a message to the environment.
-
-        Args:
-            msg (str): The message to log.
-        """
         self.log.log_str(msg)
 
     # converts the (c, w, h) frame returned by mlagents v1.0.0 and Unity 2022.3 to (w, h, c)
     # as expected by gym==0.21.0
     # HACK: mode is not used, but is required by the gym.Wrapper class (might be unnecessary but keeping for now)
     def render(self, mode="rgb_array") -> np.ndarray: # pylint: disable=unused-argument
-        """
-        Renders the current frame of the environment.
-
-        Args:
-            mode (str, optional): The mode to render the frame in. Defaults to "rgb_array".
-
-        Returns:
-            numpy.ndarray: The rendered frame of the environment.
-        """
         return np.moveaxis(self.env.render(), [0, 1, 2], [2, 0, 1])
     
     def reset(self, seed: Optional[int] = None, **kwargs) -> None | list[np.ndarray] | np.ndarray: # pylint: disable=unused-argument
         # nothing to do if the wrapped env does not accept `seed`
-        """
-        Resets the environment with the given seed and arguments.
-
-        Args:
-            seed (int, optional): The seed to use for the environment. Defaults to None.
-            **kwargs: The arguments to pass to the environment.
-
-        Returns:
-            numpy.ndarray: The initial state of the environment.
-        """
         return self.env.reset(**kwargs)
 
     def step(self, action: list[Any]) -> tuple[np.ndarray, float, bool, dict]:
-        """
-        Takes a step in the environment with the given action.
-
-        Args:
-            action (list[Any]): The action to take in the environment.
-
-        Returns:
-            tuple[numpy.ndarray, float, bool, dict]: A tuple containing the next state, reward, done flag, and info dictionary.
-        """
         next_state, reward, done, info = self.env.step(action)
         return next_state, float(reward), done, info
 
     def _set_executable_permission(self) -> None:
-        """
-        Sets the executable permission for the Unity executable file.
-        """
         subprocess.run(["chmod", "-R", "755", self.executable_path], check=True)
         self.logger.info("Executable permission is set")
 
     def _set_display(self) -> None:
-        """
-        Sets the display environment variable for the Unity environment.
-        """
         os.environ["DISPLAY"] = str(f":{self.display}")
         self.logger.info("Display is set")
 
     @staticmethod
     def _get_experiment_design(executable_path: str) -> tuple[int, list[str]]:
-        """
-        Gets the experiment design from the executable directory.
-
-        Args:
-            executable_path (str): The path to the Unity executable file.
-
-        Returns:
-            tuple[int, list[str]]: A tuple containing the number of test conditions and the list of imprinting conditions.
-
-        Raises:
-            FileNotFoundError: If the experiment configuration file is not found.
-            KeyError: If the experiment configuration file is not properly formatted.
-        """
         # get the experiment design from the executable directory
         parent_dir = os.path.dirname(executable_path)
         yaml_files: str = [file for file in os.listdir(parent_dir) if file.endswith(".yaml")]
@@ -226,22 +143,6 @@ class Environment(Wrapper):
 
     @staticmethod
     def _validate_executable_path(executable_path: str) -> str:
-        """
-        Validates the Unity executable path.
-
-        Args:
-            executable_path (str): The path to the Unity executable file.
-
-        Returns:
-            str: The validated path to the Unity executable file.
-
-        Raises:
-            ValueError: If the executable path is not a string.
-            FileNotFoundError: If the executable path does not exist.
-            ValueError: If the executable path is not a valid Unity executable file.
-            FileNotFoundError: If the directory does not contain the 'UnityPlayer.so' file.
-            FileNotFoundError: If the data directory does not exist.
-        """
         if not isinstance(executable_path, str):
             raise ValueError("executable_path should be a string. Instead, it is of type {type(executable_path)}")
 

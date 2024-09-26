@@ -1,30 +1,10 @@
-"""
-Train performance
-
-This module contains the functions to compute the train performance of the agent.
-
-Functions:
-    compute_train_performance: Compute Train performance
-    average_in_episode_three_region: Train performance
-    moving_average: Smooth values by doing a moving average
-"""
-
 import os
 import glob
 import numpy as np
 import pandas as pd
 
 def compute_train_performance(path) -> tuple[list, np.ndarray | list]:
-    """
-    Compute Train performance
 
-    Args:
-        path (Path or String?): path to training files # TODO check the type
-
-    Returns:
-        x (list): list of the episode numbers
-        y (numpy.array) : the moving averages of the success rate 
-    """
     x,y = [], []
     try:
         training_files = glob.glob(os.path.join(path, "*.csv"))
@@ -51,17 +31,6 @@ def compute_train_performance(path) -> tuple[list, np.ndarray | list]:
     return x,y
 
 def average_in_episode_three_region(log: pd.DataFrame, column: str = 'agent.x', transient: int = 90) -> tuple[dict, pd.DataFrame, list]:
-    """
-    Train performance
-
-    Args:
-        log (_type_): _description_
-        column (str, optional): _description_. Defaults to 'agent.x'.
-        transient (int, optional): _description_. Defaults to 90.
-
-    Returns:
-        _type_: _description_
-    """
     try:
         log.loc[log.Episode % 2 == 1, column] *= -1
         #Translate coordinates
@@ -89,15 +58,5 @@ def average_in_episode_three_region(log: pd.DataFrame, column: str = 'agent.x', 
         return (None, None, None)
 
 def moving_average(values: list, window: int) -> np.ndarray:
-    """
-    Smooth values by doing a moving average.
-
-    Args:
-        values (numpy.array): The input array of values.
-        window (int): The size of the moving window.
-
-    Returns:
-        numpy.array: The smoothed array of values.
-    """
     weights: np.ndarray = np.repeat(1.0, window) / window
     return np.convolve(values, weights, 'valid')
