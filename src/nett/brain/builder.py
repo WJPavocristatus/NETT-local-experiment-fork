@@ -21,8 +21,10 @@ from stable_baselines3.common.logger import configure
 from stable_baselines3.common import results_plotter
 from nett.brain import algorithms, policies, encoder_dict
 from nett.brain import encoders
-from nett.utils.callbacks import initialize_callbacks
+from nett.services.callbacks import initialize_callbacks
 from gym.wrappers.monitoring.video_recorder import VideoRecorder
+
+from nett import logger
 
 class Brain:
 
@@ -41,8 +43,7 @@ class Brain:
         custom_policy_arch: Optional[list[int|dict[str,list[int]]]] = None
     ) -> None:
     
-        # Initialize logger
-        from nett import logger
+       
 
         self.logger = logger.getChild(__class__.__name__)
 

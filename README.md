@@ -5,13 +5,8 @@
 
 Benchmarking Virtual Agents in Controlled-Rearing Conditions
 
-![PyPI - Version](https://img.shields.io/pypi/v/nett-benchmarks)
-![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fbuildingamind%2FNewbornEmbodiedTuringTest%2Fmain%2Fpyproject.toml)
-![GitHub License](https://img.shields.io/github/license/buildingamind/NewbornEmbodiedTuringTest)
-![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/buildingamind/NewbornEmbodiedTuringTest)
 
 [Getting Started](#getting-started) •
-[Documentation](https://buildingamind.github.io/NewbornEmbodiedTuringTest/) • 
 [Lab Website](http://buildingamind.com/)
 
 </div>
@@ -20,68 +15,48 @@ The Newborn Embodied Turing Test (NETT) is a cutting-edge toolkit designed to si
 
 Below is a visual representation of our experimental setup, showcasing the infrastructure for the three primary experiments discussed in this documentation.
 
-<div align="center">
-
-<img src="https://github.com/buildingamind/NewbornEmbodiedTuringTest/raw/main/docs/assets/images/digital_twin.jpg" alt="Digital Twin" width="65%" />
-</div>
-
-## How to Use this Repository
-
-The NETT toolkit comprises three key components:
-
-1. **Virtual Environment**: A dynamic environment that serves as the habitat for virtual agents.
-2. **Experimental Simulation Programs**: Tools to initiate and conduct experiments within the virtual world.
-3. **Data Visualization Programs**: Utilities for analyzing and visualizing experiment outcomes.
-
-## Directory Structure
 
 The directory structure of the code is as follows:
 
 ```
-├── docs                          # Documentation and guides
 ├── examples
 │   ├── notebooks                 # Jupyter Notebooks for examples
 │      └── Getting Started.ipynb  # Introduction and setup notebook
-│   └── run                       # Terminal script example
+
 ├── src/nett
-│   ├── analysis                  # Analysis scripts
-│   ├── body                      # Agent body configurations
-│   ├── brain                     # Neural network models and learning algorithms
-│   ├── environment               # Simulation environments
-│   ├── utils                     # Utility functions
+│   ├── analysis/                  # Analysis scripts
+│   ├── body/                      # Agent body configurations
+│   ├── brain/                     # Neural network models and learning algorithms
+│   ├── environment /              # Simulation environments
+│   ├── services/                     # Utility functions
 │   ├── nett.py                   # Main library script
 │   └── __init__.py               # Package initialization
-├── tests                         # Unit tests
-├── mkdocs.yml                    # MkDocs configuration
+├── tests/                         # Unit tests
 ├── pyproject.toml                # Project metadata
 └── README.md                     # This README file
 ```
 
 ## Getting Started
-<!-- sphinx-start -->
-<!-- This comment is here to denote the start of the "Getting Started" page for Sphinx documentation -->
-To begin benchmarking your first embodied agent with NETT, please be aware:
-
-**Important**: The `mlagents==1.0.0` dependency is incompatible with Apple Silicon (M1, M2, etc.) chips. Please utilize an alternate device to execute this codebase.
 
 ### Installation
 
-1. **Virtual Environment Setup (Highly Recommended)**
+1. **Conda Environment Setup (Conda Highly Recommended)**
 
-   Create and activate a virtual environment to avoid dependency conflicts.
+   Create and activate a virtual environment with conda.
    ```bash
    conda create -y -n nett_env python=3.10.12
    conda activate nett_env
    ```
-   See [here](https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/20/conda "Link for how to set-up a virtual env") for detailed instructions.
 
 2. **Install Prerequistes**
 
    Install the needed versions of `setuptools` and `pip`:
    ```bash
+   pip install mlagents
    pip install setuptools==65.5.0 pip==21 wheel==0.38.4
    ```
-   **NOTE:** This is a result of incompatibilities with the subdependency `gym==0.21`. More information about this issue can be found [here](https://github.com/openai/gym/issues/3176#issuecomment-1560026649)
+   **NOTE:** This is required due to incompatibilities with the `gym==0.21` dependency of `mlagents-env` 
+   <!-- TODO: fix this by figuring out installs using ONLY conda -->
 
 3. **Toolkit Installation**
 
@@ -90,7 +65,17 @@ To begin benchmarking your first embodied agent with NETT, please be aware:
    pip install nett-benchmarks
    ```
 
-   **NOTE:**: Installation outside a virtual environment may fail due to conflicting dependencies. Ensure compatibility, especially with `gym==0.21` and `numpy<=1.21.2`.
+   **NOTE:**: DO NOT install outside a virtual environment; otherwise will cause dependency conflicts, notably `gym==0.21` and `numpy<=1.21.2`*.
+
+4. **Install Dependencies**
+
+   Run the following
+   ```
+   python -m pip install .
+   ```
+
+{ *: just install `numpy` using conda with the command `conda install numpy` }
+
 
 ### Running a NETT
 
@@ -172,8 +157,6 @@ After running the experiments, the pipeline will generate a collection of datafi
    benchmarks.analyze(run_dir="path/to/run/output/directory/", output_dir="path/to/analysis/output/directory/")
    ```
 
-<!-- sphinx-end -->
-<!-- This comment is here to denote the end of the "Getting Started" page for Sphinx documentation -->
 
 ## Documentation
 For a link to the full documentation, please visit [here](https://buildingamind.github.io/NewbornEmbodiedTuringTest/).

@@ -6,14 +6,14 @@ import subprocess
 from typing import Optional, Any
 
 import numpy as np
-import yaml
+# import yaml
 
 from gym import Wrapper
 import mlagents_envs
 from mlagents_envs.environment import UnityEnvironment
 
 # checks to see if ml-agents tmp files have the proper permissions
-from nett import loger
+from nett import logger
 try :
     from mlagents_envs.envs.unity_gym_env import UnityToGymWrapper
 except PermissionError as _:
@@ -118,27 +118,27 @@ class Environment(Wrapper):
         os.environ["DISPLAY"] = str(f":{self.display}")
         self.logger.info("Display is set")
 
-    @staticmethod
-    def _get_experiment_design(executable_path: str) -> tuple[int, list[str]]:
-        # get the experiment design from the executable directory
-        parent_dir = os.path.dirname(executable_path)
-        yaml_files: str = [file for file in os.listdir(parent_dir) if file.endswith(".yaml")]
-        if not yaml_files:
-            raise FileNotFoundError("No experiment configuration file found in the executable directory. You may be using a Unity executable meant for nett versions prior to v0.5.0. Please update the Unity executable to the latest version or use nett v0.4.1 or older.")
+    # @staticmethod
+    # def _get_experiment_design(executable_path: str) -> tuple[int, list[str]]:
+    #     # get the experiment design from the executable directory
+    #     parent_dir = os.path.dirname(executable_path)
+    #     yaml_files: str = [file for file in os.listdir(parent_dir) if file.endswith(".yaml")]
+    #     if not yaml_files:
+    #         raise FileNotFoundError("No experiment configuration file found in the executable directory. You may be using a Unity executable meant for nett versions prior to v0.5.0. Please update the Unity executable to the latest version or use nett v0.4.1 or older.")
 
-        yaml_file: str = os.path.join(parent_dir, yaml_files[0])
+    #     yaml_file: str = os.path.join(parent_dir, yaml_files[0])
 
-        # read the yaml file
-        with open(yaml_file, "r") as file:
-            yaml_data = yaml.safe_load(file)
+    #     # read the yaml file
+    #     with open(yaml_file, "r") as file:
+    #         yaml_data = yaml.safe_load(file)
 
-            try:
-                num_test_conditions: int = yaml_data["num_test_conditions"]
-                imprinting_conditions: list[str] = yaml_data["imprinting_conditions"]
-            except KeyError:
-                raise KeyError("Experiment configuration file is not properly formatted. It should contain 'num_test_conditions' and 'imprinting_conditions' keys.")
+    #         try:
+    #             num_test_conditions: int = yaml_data["num_test_conditions"]
+    #             imprinting_conditions: list[str] = yaml_data["imprinting_conditions"]
+    #         except KeyError:
+    #             raise KeyError("Experiment configuration file is not properly formatted. It should contain 'num_test_conditions' and 'imprinting_conditions' keys.")
 
-        return num_test_conditions, imprinting_conditions
+    #     return num_test_conditions, imprinting_conditions
 
     @staticmethod
     def _validate_executable_path(executable_path: str) -> str:
