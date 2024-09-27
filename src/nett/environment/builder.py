@@ -13,12 +13,13 @@ import mlagents_envs
 from mlagents_envs.environment import UnityEnvironment
 
 # checks to see if ml-agents tmp files have the proper permissions
+from nett import loger
 try :
     from mlagents_envs.envs.unity_gym_env import UnityToGymWrapper
 except PermissionError as _:
      raise PermissionError("Directory '/tmp/ml-agents-binaries' is not accessible. Please change permissions of the directory and its subdirectories ('tmp' and 'binaries') to 1777 or delete the entire directory and try again.")
 
-from nett.utils.environment import Logger
+from nett.services.environment import Logger
 
 class Environment(Wrapper):
     def __init__(self,
@@ -27,9 +28,7 @@ class Environment(Wrapper):
                  record_chamber: bool = False,
                  record_agent: bool = False,
                  recording_frames: int = 1000) -> None:
-        """Constructor method
-        """
-        from nett import logger
+
         self.logger = logger.getChild(__class__.__name__)
 
         self.executable_path = self._validate_executable_path(executable_path)

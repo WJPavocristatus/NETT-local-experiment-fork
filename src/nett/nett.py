@@ -1,10 +1,3 @@
-"""
-This module contains the NETT class, which is the main class for training, testing and analyzing brains in environments.
-
-.. module:: nett
-   :synopsis: Main class for training, testing and analyzing brains in environments.
-
-"""
 
 import importlib
 import time
@@ -21,9 +14,9 @@ from sb3_contrib import RecurrentPPO
 from pynvml import nvmlInit, nvmlDeviceGetCount, nvmlDeviceGetHandleByIndex, nvmlDeviceGetMemoryInfo
 import mlagents_envs
 
-from nett.utils.io import mute
-from nett.utils.job import Job
-from nett.utils.environment import port_in_use
+from nett.services.io import mute
+from nett.services.job import Job
+from nett.services.environment import port_in_use
 
 class NETT:
   
