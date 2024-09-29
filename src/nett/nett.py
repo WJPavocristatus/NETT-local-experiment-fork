@@ -17,7 +17,11 @@ from nett.services.io import mute
 from nett.services.job import Job
 from nett.services.logger import Logger
 from nett.services.environment import port_in_use
-from nett import Brain, Body, Environment
+from nett import (
+    Brain,
+    Body,
+    Environment
+)
 
 class NETT:
   
