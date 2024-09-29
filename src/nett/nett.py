@@ -15,11 +15,13 @@ import mlagents_envs
 
 from nett.services.io import mute
 from nett.services.job import Job
+from nett.services.logger import Logger
 from nett.services.environment import port_in_use
+from nett import Brain, Body, Environment
 
 class NETT:
   
-    def __init__(self, brain: "nett.Brain", body: "nett.Body", environment: "nett.Environment") -> None:
+    def __init__(self, brain: Brain, body: Body, environment: Environment) -> None:
       
         from nett import logger
         self.logger = logger.getChild(__class__.__name__)
@@ -45,7 +47,8 @@ class NETT:
             synchronous: bool = False,
             save_checkpoints: bool = False,
             checkpoint_freq: int = 30_000,
-            base_port: int = 5004) -> list[Future]:
+            base_port: int = 5004
+        ) -> list[Future]:
     
         # set up the output_dir (wherever the user specifies, REQUIRED, NO DEFAULT)
         output_dir = Path(output_dir)
@@ -174,7 +177,7 @@ class NETT:
         print(f"Analysis complete. See results at {output_dir}")
 
     def _execute_job(self, job: Job) -> Future:
-        brain: "nett.Brain" = deepcopy(self.brain)
+        brain: Brain = deepcopy(self.brain)
 
         # for train
         if job.estimate_memory or job.mode in ["train", "full"]: # TODO: Create a memory estimate method for test
@@ -330,7 +333,7 @@ class NETT:
         # create set of all brain-environment combinations
         return set(product(condition_set, set(range(1, num_brains + 1))))
 
-    def _schedule_jobs(self, task_set: set[tuple[str,int]], devices: list[int], job_memory: int, port: int, logger: "Logger") -> tuple[list[Job], list[Job]]:
+    def _schedule_jobs(self, task_set: set[tuple[str,int]], devices: list[int], job_memory: int, port: int, logger: Logger) -> tuple[list[Job], list[Job]]:
         # create jobs
         jobs: list[Job] = []
         waitlist: list[Job] = []
@@ -399,7 +402,7 @@ class NETT:
 
         return devices
 
-    def _wrap_env(self, mode: str, port: int, kwargs: dict[str,Any]) -> "nett.Body":
+    def _wrap_env(self, mode: str, port: int, kwargs: dict[str,Any]) -> Body:
         copy_environment = deepcopy(self.environment)
         copy_environment.initialize(mode, port, **kwargs)
         copy_body = deepcopy(self.body)
