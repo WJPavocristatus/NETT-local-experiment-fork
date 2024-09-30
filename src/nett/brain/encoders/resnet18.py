@@ -1,29 +1,3 @@
-"""
-This module defines the Resnet18CNN class, which is a custom feature extractor
-based on the ResNet-18 architecture. It is used for encoding observations in
-the Newborn Embodied Turing Test project.
-
-The Resnet18CNN class inherits from the BaseFeaturesExtractor class provided
-by the stable_baselines3 library. It takes an observation space and the desired
-number of features as input and extracts features using the ResNet-18 model.
-
-The ResNet-18 architecture consists of several residual blocks, each containing
-two convolutional layers and a skip connection. The final features are obtained
-by applying a linear layer to the output of the last residual block.
-
-The ResBlock class and the ResNet_18 class are helper classes used by the
-Resnet18CNN class to define the residual blocks and the overall ResNet-18
-architecture, respectively.
-
-Example usage:
-
-    observation_space = gym.spaces.Box(low=0, high=255, shape=(3, 84, 84), dtype=np.uint8)
-    features_dim = 256
-    encoder = Resnet18CNN(observation_space, features_dim)
-    features = encoder(observation)
-
-"""
-
 #!/usr/bin/env python3
 
 # import pdb

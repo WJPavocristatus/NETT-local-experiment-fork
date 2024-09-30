@@ -1,15 +1,15 @@
 
 import torch
-from torch import nn as nn
-
+from torch import nn 
 from pl_bolts.utils import _TORCHVISION_AVAILABLE
 from pl_bolts.utils.warnings import warn_missing_pkg
+from bottleneck import Bottleneck
 
-# if _TORCHVISION_AVAILABLE:
-#     #from torchvision.models.utils import load_state_dict_from_url
-#     from torch.hub import load_state_dict_from_url
-# else:  # pragma: no cover
-#     warn_missing_pkg('torchvision')
+if _TORCHVISION_AVAILABLE:
+    #from torchvision.models.utils import load_state_dict_from_url
+    from torch.hub import load_state_dict_from_url
+else:  # pragma: no cover
+    warn_missing_pkg('torchvision')
 
 __all__ = [
     'ResNet',
