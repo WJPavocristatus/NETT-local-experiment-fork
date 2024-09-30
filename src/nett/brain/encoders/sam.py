@@ -2,8 +2,7 @@ import gym
 
 import torch as th
 import timm
-from torchvision.transforms import Compose
-from torchvision.transforms import Resize, CenterCrop, Normalize, InterpolationMode
+from torchvision.transforms import Compose, Resize, CenterCrop, Normalize, InterpolationMode
 
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 
