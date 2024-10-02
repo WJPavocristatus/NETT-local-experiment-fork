@@ -17,7 +17,7 @@ def port_in_use(port) -> bool:
     return False
 
 # Create the StringLogChannel class. This is how logging info is communicated between python and unity
-class Logger(SideChannel):
+class UnitySocket(SideChannel):
     def __init__(self, log_title, log_dir="./EnvLogs/") -> None:
         super().__init__(uuid.UUID("621f0a70-4f87-11ea-a6bf-784f4387d1f7"))
         if not os.path.exists(log_dir):

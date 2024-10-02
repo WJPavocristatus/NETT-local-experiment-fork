@@ -25,10 +25,10 @@ from pynvml import (
 )
 
 from services.io import mute
-from services.job import Job
+from nett.services.job import Job
 from services.logger import Logger
-from services.environment import port_in_use
-from services import analyze
+from nett.services.unity_socket import port_in_use
+from services.analyze import analyze
 from brain.builder import Brain
 from body.builder import Body
 from environment.builder import Environment
@@ -44,7 +44,7 @@ class NETT:
             environment: Environment
         ):
       
-        logger = Logger
+        logger = Logger()
         self.logger = logger.getChild(__class__.__name__)
         self.brain = brain
         self.body = body
