@@ -48,7 +48,7 @@ The directory structure of the code is as follows:
    conda activate nett_env
    ```
 
-2. **Install Prerequistes**
+<!-- 2. **Install Prerequistes**
 
    Install the needed versions of `setuptools` and `pip`:
    ```bash
@@ -56,7 +56,7 @@ The directory structure of the code is as follows:
    pip install setuptools==65.5.0 pip==21 wheel==0.38.4
    ```
    **NOTE:** This is required due to incompatibilities with the `gym==0.21` dependency of `mlagents-env` 
-   <!-- TODO: fix this by figuring out installs using ONLY conda -->
+    TODO: fix this by figuring out installs using ONLY conda 
 
 3. **Toolkit Installation**
 
@@ -157,15 +157,4 @@ After running the experiments, the pipeline will generate a collection of datafi
    benchmarks.analyze(run_dir="path/to/run/output/directory/", output_dir="path/to/analysis/output/directory/")
    ```
 
-
-## Documentation
-For a link to the full documentation, please visit [here](https://buildingamind.github.io/NewbornEmbodiedTuringTest/).
-
-## Experiment Configuration
-
-More information related to details on the experiment can be found on following pages.
-
-* [**Parsing Experiment**](https://buildingamind.github.io/NewbornEmbodiedTuringTest/papers/Parsing.html)
-* [**ViewPoint Experiment**](https://buildingamind.github.io/NewbornEmbodiedTuringTest/papers/ViewInvariant.html)
-
-[🔼 Back to top](#newborn-embodied-turing-test)
+[🔼 Back to top](#newborn-embodied-turing-test) -->
