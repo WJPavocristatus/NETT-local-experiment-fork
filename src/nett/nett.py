@@ -26,7 +26,7 @@ from pynvml import (
 
 from services.io import mute
 from nett.services.job import Job
-from services.logger import Logger
+from nett.services.side_channel_logger import Logger
 from nett.services.unity_socket import port_in_use
 from services.analyze import analyze
 from brain.builder import Brain
@@ -85,17 +85,8 @@ class NETT:
             if not issubclass(self.brain.algorithm, RecurrentPPO):
                 iterations["test"] *= steps_per_episode
 
-        # initialize job object
-        Job.initialize(
-            mode=mode,
-            output_dir=output_dir,
-            save_checkpoints=save_checkpoints, 
-            steps_per_episode=steps_per_episode,
-            checkpoint_freq=checkpoint_freq,
-            reward=self.brain.reward,
-            batch_mode=batch_mode, 
-            iterations=iterations 
-            )
+        # initialize job object ## TODO: determin WHY HERE?
+        Job.initialize(mode, output_dir, save_checkpoints, steps_per_episode, checkpoint_freq, self.brain.reward, batch_mode, iterations)
 
         # validate devices
         devices = self._validate_devices(devices)

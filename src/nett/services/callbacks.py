@@ -1,6 +1,6 @@
 from pathlib import Path
 import sys
-
+from services.job import Job
 from tqdm import tqdm
 from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback, CallbackList
 from stable_baselines3.common.logger import HParam
@@ -9,7 +9,7 @@ from stable_baselines3.common.logger import HParam
 
 from pynvml import nvmlDeviceGetHandleByIndex, nvmlDeviceGetMemoryInfo, nvmlInit
 
-def initialize_callbacks(job: "Job") -> CallbackList:
+def initialize_callbacks(job: Job) -> CallbackList:
 
     hparam_callback = HParamCallback() # TODO: Are we using the tensorboard that this creates? See https://www.tensorflow.org/tensorboard Appears to be responsible for logs/events.out.. files
 
@@ -58,7 +58,7 @@ class HParamCallback(BaseCallback):
             exclude=("stdout", "log", "json", "csv"),
         )
 
-    def _on_step(self) -> bool:
+    def _on_step(self) -> bool: 
         return True
 
 class multiBarCallback(BaseCallback):

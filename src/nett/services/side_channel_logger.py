@@ -9,7 +9,7 @@ from mlagents_envs.side_channel.side_channel import (
 )
 
 # Create the StringLogChannel class. 
-class Logger(SideChannel):
+class SideChannelLogger(SideChannel):
     def __init__(self, log_title, log_dir="./EnvLogs/") -> None:
         super().__init__(uuid.UUID("621f0a70-4f87-11ea-a6bf-784f4387d1f7")) # TODO why this UUID?
         if not os.path.exists(log_dir):
