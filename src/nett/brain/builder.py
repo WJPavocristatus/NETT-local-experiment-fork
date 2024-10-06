@@ -21,10 +21,10 @@ from stable_baselines3.common.logger import configure
 from stable_baselines3.common import results_plotter
 from nett.brain import algorithms, policies, encoder_dict
 from nett.brain import encoders
-from nett.services.callbacks import initialize_callbacks
+from nett.utils.callbacks import initialize_callbacks
 from gym.wrappers.monitoring.video_recorder import VideoRecorder
 import gym
-from nett.services.jobs.job import Job
+from nett.utils.job import Job
 
 from nett import logger
 
