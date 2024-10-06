@@ -24,11 +24,11 @@ from pynvml import (
     nvmlDeviceGetMemoryInfo
 )
 
-from services.io import mute
-from nett.services.job import Job
-from nett.services.side_channel_logger import Logger
-from nett.services.unity_socket import port_in_use
-from services.analyze import analyze
+from utils.io import mute
+from nett.utils.job import Job
+from nett.utils.side_channel_logger import Logger
+from nett.utils.unity_socket import port_in_use
+from utils.analyze import analyze
 from brain.builder import Brain
 from body.builder import Body
 from environment.builder import Environment

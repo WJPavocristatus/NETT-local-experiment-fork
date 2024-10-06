@@ -19,7 +19,7 @@ try :
 except PermissionError as _:
      raise PermissionError("Directory '/tmp/ml-agents-binaries' is not accessible. Please change permissions of the directory and its subdirectories ('tmp' and 'binaries') to 1777 or delete the entire directory and try again.")
 
-from nett.services.unity_socket import UnitySocket
+from nett.utils.unity_socket import UnitySocket
 
 class Environment(Wrapper):
     def __init__(self,
